@@ -163,5 +163,5 @@ void send_message() {
   message += z;               //자이로센서 z축
   message += '@';             //종료 문자
 
-  Serial.print(message);
+  bt.print(message);
 }
