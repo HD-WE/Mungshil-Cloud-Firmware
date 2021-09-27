@@ -31,6 +31,7 @@ double y;
 double z;
 
 float temperature;
+int wear;
 
 const byte RATE_SIZE = 4;
 byte rates[RATE_SIZE];
@@ -76,7 +77,7 @@ void loop()
 
   send_message();
 
-  
+  delay(1000);
 
 
 }
@@ -113,15 +114,20 @@ void heartRate_Sensing() {
   Serial.print(beatAvg);
 
   if (irValue < 50000)
-    Serial.print(" No finger?");
+  {
+    wear = 0;
+  } else {
+    wear = 1;
+  }
 
   Serial.println();
 }
 
 void Temperature_Sensing() {
-  int readValue = analogRead(A0);
-  float voltage = readValue * 5000.0 / 1024.0;
-  temperature = (voltage - 500) / 10.0;
+  int readValue = analogRead(TMP);
+  float voltage = readValue * 5.0;
+  voltage /= 1024.0;
+  temperature = (voltage - 0.5) * 100 ;
 
   Serial.print("Temperature : ");
   Serial.println(temperature);
@@ -161,6 +167,8 @@ void send_message() {
   message += y;               //자이로센서 y축
   message += ',';             //구분자
   message += z;               //자이로센서 z축
+  message += ',';             //구분자
+  message += wear;            //착용 유무
   message += '@';             //종료 문자
 
   bt.print(message);
